@@ -141,6 +141,7 @@ On [this link]([asd](https://github.com/cacosandon/objects-auxiliary/blob/master
 This data is processed on `train_metadata.py` generating the best candidate objects for each word on each instruction. As you can see, these words are selected by the sequence index (if you see a bed at the start of the path, it should be on the first words), the area and distance.
 
 Then we compute loss for each of these objects mutliplied by lambda parameter. Final loss is computed as follows:
+![MSc SPEAKER FOLLOWER W OBJ Loss-Original + Objs drawio](https://user-images.githubusercontent.com/30879716/139291430-9f394f28-2403-495c-9336-497c02bd38c6.png)
 
 
 
