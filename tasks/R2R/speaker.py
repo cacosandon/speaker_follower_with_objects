@@ -121,6 +121,9 @@ class Seq2SeqSpeaker(object):
                list(perm_indices)
 
     def _score_obs_actions_and_instructions(self, path_obs, path_actions, encoded_instructions, feedback):
+        LAMBDA = 0.3
+
+
         assert len(path_obs) == len(path_actions)
         assert len(path_obs) == len(encoded_instructions)
         start_obs, batched_image_features, batched_action_embeddings, path_mask, \
@@ -187,7 +190,7 @@ class Seq2SeqSpeaker(object):
             if self.env.with_objects and self.env.splits == ['train']:
                 for object_idx in range(number_of_objects_by_word):
                     object_target = objects_seq[object_idx, :, t].contiguous()
-                    loss += 0.3 * F.nll_loss(log_probs, object_target, ignore_index=vocab_pad_idx, reduce=True, size_average=True)
+                    loss += LAMBDA * F.nll_loss(log_probs, object_target, ignore_index=vocab_pad_idx, reduce=True, size_average=True)
 
             for perm_index, src_index in enumerate(perm_indices):
                 word_idx = w_t[perm_index].data.item()

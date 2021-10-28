@@ -16,6 +16,7 @@ from env import R2RBatch, ImageFeatures
 from model import SpeakerEncoderLSTM, SpeakerDecoderLSTM
 from speaker import Seq2SeqSpeaker
 import eval_speaker
+from tensorboardX import SummaryWriter
 
 from vocab import SUBTRAIN_VOCAB, TRAIN_VOCAB, TRAINVAL_VOCAB
 
@@ -70,6 +71,14 @@ def filter_param(param_list):
 def train(args, train_env, agent, log_every=log_every, val_envs=None):
     ''' Train on training set, validating on both seen and unseen. '''
 
+    tensorboard_dir = 'tensorboard'
+    print("Setting up TensorboardX", flush=True)
+    log_dir = tensorboard_dir + '/' + get_model_prefix(args, train_env.image_features_list)
+    os.mkdir(log_dir)
+    if os.path.exists(log_dir):
+        print("Existing log dir, ready for use TensorboardX :)", flush=True)
+        tb_logger = SummaryWriter(log_dir=log_dir)
+
     if val_envs is None:
         val_envs = {}
 
@@ -109,6 +118,7 @@ def train(args, train_env, agent, log_every=log_every, val_envs=None):
         train_loss_avg = np.average(train_losses)
         data_log['train loss'].append(train_loss_avg)
         loss_str = 'train loss: %.4f' % train_loss_avg
+        tb_logger.add_scalar('train/avg_loss', train_loss_avg, iter)
 
         save_log = []
         # Run validation
@@ -120,6 +130,7 @@ def train(args, train_env, agent, log_every=log_every, val_envs=None):
             val_losses = np.array(agent.losses)
             val_loss_avg = np.average(val_losses)
             data_log['%s loss' % env_name].append(val_loss_avg)
+            tb_logger.add_scalar(f'{env_name}/avg_loss', val_loss_avg, iter)
 
             agent.results_path = '%s%s_%s_iter_%d.json' % (
                 args.result_dir, get_model_prefix(
@@ -136,6 +147,7 @@ def train(args, train_env, agent, log_every=log_every, val_envs=None):
             loss_str += ', %s loss: %.4f' % (env_name, val_loss_avg)
             for metric, val in score_summary.items():
                 data_log['%s %s' % (env_name, metric)].append(val)
+                tb_logger.add_scalar(f'{env_name}/{metric}', val, iter)
                 if metric in ['bleu']:
                     loss_str += ', %s: %.3f' % (metric, val)
 
