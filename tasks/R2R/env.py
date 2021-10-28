@@ -26,6 +26,11 @@ from utils import load_datasets, load_nav_graphs, structured_map, vocab_pad_idx,
 import torch
 from torch.autograd import Variable
 
+print('-----------*-------------------------------------+-----------')
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print('Using device:', device)
+print('-----------*-------------------------------------+-----------')
+
 csv.field_size_limit(sys.maxsize)
 
 # Not needed for panorama action space
