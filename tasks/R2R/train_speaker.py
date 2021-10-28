@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from collections import defaultdict
 import argparse
+import datetime
 
 import utils
 from utils import read_vocab, Tokenizer, timeSince, try_cuda
@@ -49,7 +50,11 @@ def get_model_prefix(args, image_feature_list):
         feedback_method, image_feature_name)
     if args.use_train_subset:
         model_prefix = 'trainsub_' + model_prefix
-    return model_prefix
+
+    now = datetime.datetime.now()
+    year, month, day, hour, minute = now.year, now.month, now.day, now.hour, now.minute
+    datetime_prefix = f"{year}_{month}_{day}_{hour}_{minute}_"
+    return datetime_prefix + model_prefix
 
 
 def eval_model(agent, results_path, use_dropout, feedback, allow_cheat=False):
