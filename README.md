@@ -25,7 +25,7 @@ If you only want to use our data augmentation on the R2R dataset but don't need 
 
 1. Install Python 3 (Anaconda recommended: https://www.continuum.io/downloads).
 2. Install PyTorch following the instructions on https://pytorch.org/ (we used PyTorch 0.3.1 in our experiments).
-3. Download this repository or clone **recursively** with Git, and then enter the root directory of the repository:  
+3. Download this repository or clone **recursively** with Git, and then enter the root directory of the repository:
 ```
 # Make sure to clone with --recursive
 git clone --recursive https://github.com/ronghanghu/speaker_follower.git
@@ -73,7 +73,7 @@ After this step, `img_features/` should contain `ResNet-152-imagenet.tsv`. (Note
 
 ### Training
 
-1. Train the speaker model:  
+1. Train the speaker model:
 ```
 python tasks/R2R/train_speaker.py
 ```
@@ -118,9 +118,35 @@ export FOLLOWER_PATH_PREFIX=tasks/R2R/snapshots/release/follower_final_release
 python tasks/R2R/train.py
 ```
 
+### Objects Auxiliary Task
+
+Use `--with_objects` flag for adding the objects auxiliary task. It uses the most important objects on each view forcing the speaker to add them to the generated instructions.
+
+On [this link]([asd](https://github.com/cacosandon/objects-auxiliary/blob/master/trajectory_visualization.ipynb)) you will find the generation of objects with this data for each scan and viewpoint of the train paths.
+
+```
+{
+  'name': 'bed',
+  'sequence_index': 1,
+  'sequence_len': 6,
+  'path_percentage': 0.34,
+  'heading': 2.343,
+  'relative_position': 'left',
+  'distance': 3.98,
+  'radius': 4,
+  'area': 223.4
+}
+```
+
+This data is processed on `train_metadata.py` generating the best candidate objects for each word on each instruction. As you can see, these words are selected by the sequence index (if you see a bed at the start of the path, it should be on the first words), the area and distance.
+
+Then we compute loss for each of these objects mutliplied by lambda parameter. Final loss is computed as follows:
+
+
+
 ### Inference
 
-1. Set the path prefixes for the trained speaker and follower model:  
+1. Set the path prefixes for the trained speaker and follower model:
 ```
 # the path prefixes to the trained speaker and follower model
 # change these path prefixes if you are using downloaded models.
