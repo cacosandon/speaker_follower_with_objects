@@ -95,16 +95,16 @@ class SpeakerEvaluation(object):
             all_hyps.append(tokenized_hyp)
 
             if verbose and instr_count % 100 == 0:
-                print(f"path_id (base id): {base_id}")
+                print(f"path_id (base id): {base_id}", , flush=True)
                 for i, ref in enumerate(tokenized_refs):
-                    print("ref {}:\t{}".format(i, ' '.join(ref)))
-                print("pred  :\t{}".format(' '.join(tokenized_hyp)))
+                    print("ref {}:\t{}".format(i, ' '.join(ref)), flush=True)
+                print("pred  :\t{}".format(' '.join(tokenized_hyp)), flush=True)
                 print()
 
         if skip_count != 0:
             print("skipped {} instructions without {} refs: {}".format(
                 skip_count, self.instructions_per_path, ' '.join(
-                    str(i) for i in skipped_refs)))
+                    str(i) for i in skipped_refs)), , flush=True)
 
         model_score = np.mean(model_scores)
         bleu, unpenalized_bleu = multi_bleu(all_refs, all_hyps)
@@ -133,7 +133,7 @@ def eval_seq2seq():
         for split in ['val_seen', 'val_unseen']:
             ev = SpeakerEvaluation([split])
             score_summary, _ = ev.score_file(outfile % split)
-            print('\n%s' % outfile)
+            print('\n%s' % outfile, , flush=True)
             pp.pprint(score_summary)
 
 

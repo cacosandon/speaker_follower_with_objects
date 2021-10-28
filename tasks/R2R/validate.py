@@ -33,7 +33,7 @@ def validate_entry_point(args):
         # assert score_summary == score_summary_direct
 
         for metric, val in sorted(score_summary.items()):
-            print("{} {}\t{}".format(env_name, metric, val))
+            print("{} {}\t{}".format(env_name, metric, val), flush=True)
 
 
 def make_arg_parser():

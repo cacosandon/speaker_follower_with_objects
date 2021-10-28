@@ -68,7 +68,7 @@ def train(args, train_env, agent, log_every=log_every, val_envs=None):
     if val_envs is None:
         val_envs = {}
 
-    print('Training with %s feedback' % feedback_method)
+    print('Training with %s feedback' % feedback_method, flush=True)
     encoder_optimizer = optim.Adam(
         filter_param(agent.encoder.parameters()), lr=learning_rate,
         weight_decay=weight_decay)
@@ -125,7 +125,7 @@ def train(args, train_env, agent, log_every=log_every, val_envs=None):
             results = agent.test(use_dropout=False, feedback='argmax')
             if not args.no_save:
                 agent.write_results()
-            print("evaluating on {}".format(env_name))
+            print("evaluating on {}".format(env_name), flush=True)
             score_summary, _ = evaluator.score_results(results, verbose=True)
 
             loss_str += ', %s loss: %.4f' % (env_name, val_loss_avg)
@@ -152,9 +152,9 @@ def train(args, train_env, agent, log_every=log_every, val_envs=None):
 
         print(('%s (%d %d%%) %s' % (
             timeSince(start, float(iter)/args.n_iters),
-            iter, float(iter)/args.n_iters*100, loss_str)))
+            iter, float(iter)/args.n_iters*100, loss_str)), flush=True)
         for s in save_log:
-            print(s)
+            print(s, flush=True)
 
         if not args.no_save:
             if save_every and iter % save_every == 0:

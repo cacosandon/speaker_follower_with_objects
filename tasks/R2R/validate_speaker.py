@@ -30,7 +30,7 @@ def validate_entry_point(args):
             pred_results, verbose=False)
 
         for metric, val in pred_score_summary.items():
-            print("pred {} {}\t{}".format(env_name, metric, val))
+            print("pred {} {}\t{}".format(env_name, metric, val), flush=True)
 
         if args.pred_results_output_file:
             fname = "{}_{}.json".format(

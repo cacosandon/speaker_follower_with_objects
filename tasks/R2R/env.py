@@ -26,10 +26,10 @@ from utils import load_datasets, load_nav_graphs, structured_map, vocab_pad_idx,
 import torch
 from torch.autograd import Variable
 
-print('-----------*-------------------------------------+-----------')
+print('-----------*-------------------------------------+-----------', flush=True)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print('Using device:', device)
-print('-----------*-------------------------------------+-----------')
+print('Using device:', device, flush=True)
+print('-----------*-------------------------------------+-----------', flush=True)
 
 csv.field_size_limit(sys.maxsize)
 
@@ -343,7 +343,7 @@ class NoImageFeatures(ImageFeatures):
     feature_dim = ImageFeatures.MEAN_POOLED_DIM
 
     def __init__(self):
-        print('Image features not provided')
+        print('Image features not provided', flush=True)
         self.features = np.zeros((ImageFeatures.NUM_VIEWS, self.feature_dim), dtype=np.float32)
 
     def get_features(self, state):
@@ -360,7 +360,7 @@ class MeanPooledImageFeatures(ImageFeatures):
         self.mean_pooled_feature_stores = [paths.mean_pooled_feature_store_paths[dataset]
                                            for dataset in image_feature_datasets]
         self.feature_dim = MeanPooledImageFeatures.MEAN_POOLED_DIM * len(image_feature_datasets)
-        print('Loading image features from %s' % ', '.join(self.mean_pooled_feature_stores))
+        print('Loading image features from %s' % ', '.join(self.mean_pooled_feature_stores), flush=True)
         tsv_fieldnames = ['scanId', 'viewpointId', 'image_w','image_h', 'vfov', 'features']
         self.features = defaultdict(list)
         for mpfs in self.mean_pooled_feature_stores:
@@ -706,11 +706,11 @@ class R2RBatch():
             self._load_objects_by_word()
         self.set_beam_size(beam_size)
         self.print_progress = False
-        print('R2RBatch loaded with %d instructions, using splits: %s' % (len(self.data), ",".join(splits)))
+        print('R2RBatch loaded with %d instructions, using splits: %s' % (len(self.data), ",".join(splits)), flush=True)
         if self.with_objects:
-            print('Using objects to generate better instructions')
+            print('Using objects to generate better instructions', flush=True)
         else:
-            print('Using base model')
+            print('Using base model', flush=True)
 
     def set_beam_size(self, beam_size, force_reload=False):
         # warning: this will invalidate the environment, self.reset() should be called afterward!
@@ -724,7 +724,7 @@ class R2RBatch():
 
     def _load_nav_graphs(self):
         ''' Load connectivity graph for each scan, useful for reasoning about shortest paths '''
-        print('Loading navigation graphs for %d scans' % len(self.scans))
+        print('Loading navigation graphs for %d scans' % len(self.scans), flush=True)
         self.graphs = load_nav_graphs(self.scans)
         self.paths = {}
         for scan,G in self.graphs.items(): # compute all shortest paths
@@ -738,7 +738,7 @@ class R2RBatch():
         with open('data/train_objects_by_word.pickle', 'rb') as file:
             data = pickle.load(file)
 
-        print(f'Loading objects of 3 instruction per {len(data.keys())} paths')
+        print(f'Loading objects of 3 instruction per {len(data.keys())} paths', flush=True)
         self.objects_by_words = data
 
 
@@ -776,11 +776,11 @@ class R2RBatch():
                 return n_a
 
         # Next nextViewpointId not found! This should not happen!
-        print('adj_loc_list:', adj_loc_list)
-        print('nextViewpointId:', nextViewpointId)
+        print('adj_loc_list:', adj_loc_list, flush=True)
+        print('nextViewpointId:', nextViewpointId, flush=True)
         long_id = '{}_{}'.format(state.scanId, state.location.viewpointId)
-        print('longId:', long_id)
-        raise Exception('Bug: nextViewpointId not in adj_loc_list')
+        print('longId:', long_id, flush=True)
+        raise Exception('Bug: nextViewpointId not in adj_loc_list', flush=True)
 
     def observe(self, world_states, beamed=False, include_teacher=True):
         #start_time = time.time()
