@@ -437,11 +437,8 @@ class Seq2SeqSpeaker(object):
         self.decoder.train()
         self.losses = []
         it = range(1, n_iters + 1)
-        try:
-            import tqdm
-            it = tqdm.tqdm(it)
-        except:
-            pass
+        import tqdm
+        it = tqdm.tqdm(it)
         for _ in it:
             encoder_optimizer.zero_grad()
             decoder_optimizer.zero_grad()
