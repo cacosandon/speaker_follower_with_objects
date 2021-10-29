@@ -197,7 +197,9 @@ def make_env_and_models(args, train_vocab_path, train_splits, test_splits,
     vocab = read_vocab(train_vocab_path)
     tok = Tokenizer(vocab=vocab)
     train_env = R2RBatch(image_features_list, batch_size=batch_size,
-                         splits=train_splits, tokenizer=tok, with_objects=args.with_objects)
+                         splits=train_splits, tokenizer=tok,
+                         with_objects=args.with_objects,
+                         train_instructions_with_objects=args.train_instructions_with_objects)
 
     enc_hidden_size = hidden_size//2 if bidirectional else hidden_size
     glove = np.load(glove_path)
@@ -212,7 +214,8 @@ def make_env_and_models(args, train_vocab_path, train_splits, test_splits,
     test_envs = {
         split: (R2RBatch(image_features_list, batch_size=batch_size,
                          splits=[split], tokenizer=tok,
-                         instruction_limit=test_instruction_limit, with_objects=args.with_objects),
+                         instruction_limit=test_instruction_limit,
+                         with_objects=args.with_objects),
                 eval_speaker.SpeakerEvaluation(
                     [split], instructions_per_path=test_instruction_limit))
         for split in test_splits}
@@ -221,7 +224,12 @@ def make_env_and_models(args, train_vocab_path, train_splits, test_splits,
 
 
 def train_setup(args):
-    train_splits = ['train']
+    if args.train_instructions_with_objects:
+        print("Using train instructions with only objects present", flush=True)
+        train_splits = ['train_instructions_with_objects']
+    else:
+        print("Using all train instructions", flush=True)
+        train_splits = ['train']
     # val_splits = ['train_subset', 'val_seen', 'val_unseen']
     val_splits = ['val_seen', 'val_unseen']
     vocab = TRAIN_VOCAB
@@ -284,6 +292,7 @@ def make_arg_parser():
     parser.add_argument("--snapshot_dir", default=SNAPSHOT_DIR)
     parser.add_argument("--plot_dir", default=PLOT_DIR)
     parser.add_argument("--with_objects", action='store_true')
+    parser.add_argument("--train_instructions_with_objects", action='store_true')
     return parser
 
 

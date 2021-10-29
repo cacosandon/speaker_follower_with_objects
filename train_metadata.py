@@ -7,7 +7,7 @@ import pickle
 MAX_OBJECTS_BY_SEGMENT = 5
 FORBIDDEN_WORDS = ['doorframe', 'light', 'floor', 'ceiling', 'remove', 'otherroom']
 
-with open('data/working_data/train_metadata.pickle', 'rb') as file:
+with open('data/working_data/train_metadata_only_objects_present.pickle', 'rb') as file:
   data = pickle.load(file)
 
 """
@@ -85,6 +85,6 @@ for key, value in data.items():
     )
   processed_data[key] = instruction_objects_by_word
 
-with open('data/train_objects_by_word.pickle', 'wb') as file:
+with open('data/working_data/train_metadata_objects_only.pickle', 'wb') as file:
   pickle.dump(processed_data, file)
 
