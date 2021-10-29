@@ -8,11 +8,13 @@ tok = Tokenizer(vocab=vocab)
 with open('data/working_data/train_objects_by_word.pickle', 'rb') as file:
   data = pickle.load(file)
 
-print(tok.encode_sentence(data[5487][0]['words_objects'][0][0]['name']))
+print(len(data))
+print(sum([len(data[key]) for key in data]))
 
-for key in data:
-  for elem in data[key]:
-    for j in elem['words_objects']:
-      for z in j:
-        if 1 in tok.encode_sentence(z['name'])[0]:
-          print(z['name'])
+print('-----')
+
+with open('data/working_data/train_objects_by_word_objects_only.pickle', 'rb') as file:
+  data = pickle.load(file)
+
+print(len(data))
+print(sum([len(data[key]) for key in data]))

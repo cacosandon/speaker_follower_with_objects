@@ -738,7 +738,7 @@ class R2RBatch():
         ''' Load objects that should be en each word (or instruction) '''
         path = 'train_objects_by_word.pickle'
         if self.train_instructions_with_objects:
-            path = 'train_objects_by_word_with_objects_instructions.pickle'
+            path = 'train_objects_by_word_objects_only.pickle'
         with open(f'data/{path}', 'rb') as file:
             data = pickle.load(file)
 

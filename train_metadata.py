@@ -85,6 +85,6 @@ for key, value in data.items():
     )
   processed_data[key] = instruction_objects_by_word
 
-with open('data/working_data/train_metadata_objects_only.pickle', 'wb') as file:
+with open('data/working_data/train_objects_by_word_objects_only.pickle', 'wb') as file:
   pickle.dump(processed_data, file)
 
