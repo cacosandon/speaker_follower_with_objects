@@ -669,7 +669,7 @@ class EnvBatch():
 class R2RBatch():
     ''' Implements the Room to Room navigation task, using discretized viewpoints and pretrained features '''
 
-    def __init__(self, image_features_list, batch_size=100, seed=10, splits=['train'], tokenizer=None, beam_size=1, instruction_limit=None, with_objects=False):
+    def __init__(self, image_features_list, batch_size=100, seed=10, splits=['train'], tokenizer=None, beam_size=1, instruction_limit=None, with_objects=False, train_instructions_with_objects=False):
         self.image_features_list = image_features_list
         self.data = []
         self.scans = []
@@ -702,7 +702,8 @@ class R2RBatch():
         self.batch_size = batch_size
         self._load_nav_graphs()
         self.with_objects = with_objects
-        if with_objects and self.splits == ['train']:
+        self.train_instructions_with_objects = train_instructions_with_objects
+        if with_objects and self.splits in [['train'], ['train_instructions_with_objects']]:
             self._load_objects_by_word()
         self.set_beam_size(beam_size)
         self.print_progress = False
@@ -735,7 +736,10 @@ class R2RBatch():
 
     def _load_objects_by_word(self):
         ''' Load objects that should be en each word (or instruction) '''
-        with open('data/train_objects_by_word.pickle', 'rb') as file:
+        path = 'train_objects_by_word.pickle'
+        if self.train_instructions_with_objects:
+            path = 'train_objects_by_word_with_objects_instructions.pickle'
+        with open(f'data/{path}', 'rb') as file:
             data = pickle.load(file)
 
         print(f'Loading objects of 3 instruction per {len(data.keys())} paths', flush=True)

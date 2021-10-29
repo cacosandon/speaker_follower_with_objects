@@ -123,7 +123,6 @@ class Seq2SeqSpeaker(object):
     def _score_obs_actions_and_instructions(self, path_obs, path_actions, encoded_instructions, feedback):
         LAMBDA = 0.3
 
-
         assert len(path_obs) == len(path_actions)
         assert len(path_obs) == len(encoded_instructions)
         start_obs, batched_image_features, batched_action_embeddings, path_mask, \
@@ -132,7 +131,7 @@ class Seq2SeqSpeaker(object):
                 path_obs, path_actions, encoded_instructions)
 
         instr_seq, _, _ = batch_instructions_from_encoded(encoded_instructions, self.instruction_len)
-        if self.env.with_objects and self.env.splits == ['train']:
+        if self.env.with_objects and self.env.splits in [['train'], ['train_instructions_with_objects']]:
             objects_seq = self.batch_objects_by_word(path_obs, instr_seq, self.instruction_len)
             number_of_objects_by_word = objects_seq.size(dim=0)
 
@@ -187,7 +186,7 @@ class Seq2SeqSpeaker(object):
             sequence_scores += word_scores.data
             loss += F.nll_loss(log_probs, target, ignore_index=vocab_pad_idx, reduce=True, size_average=True)
 
-            if self.env.with_objects and self.env.splits == ['train']:
+            if self.env.with_objects and self.env.splits in [['train'], ['train_instructions_with_objects']]:
                 for object_idx in range(number_of_objects_by_word):
                     object_target = objects_seq[object_idx, :, t].contiguous()
                     loss += LAMBDA * F.nll_loss(log_probs, object_target, ignore_index=vocab_pad_idx, reduce=True, size_average=True)
