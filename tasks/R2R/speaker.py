@@ -44,7 +44,7 @@ class Seq2SeqSpeaker(object):
         self.encoder = encoder
         self.decoder = decoder
 
-        if load_weights:
+        if load_weights_filename:
             path = 'speaker/snapshots/' + load_weights_filename
             print("Loading weights from ", path)
             self.load('speaker/snapshots/' + load_weights_filename)
