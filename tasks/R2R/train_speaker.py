@@ -207,6 +207,7 @@ def make_env_and_models(args, train_vocab_path, train_splits, test_splits,
     encoder = try_cuda(SpeakerEncoderLSTM(
         action_embedding_size, feature_size, enc_hidden_size, dropout_ratio,
         bidirectional=bidirectional))
+
     decoder = try_cuda(SpeakerDecoderLSTM(
         len(vocab), word_embedding_size, hidden_size, dropout_ratio,
         glove=glove))
@@ -242,7 +243,7 @@ def train_setup(args):
     train_env, val_envs, encoder, decoder = make_env_and_models(
         args, vocab, train_splits, val_splits)
     agent = Seq2SeqSpeaker(
-        train_env, "", encoder, decoder, MAX_INSTRUCTION_LENGTH)
+        train_env, "", encoder, decoder, MAX_INSTRUCTION_LENGTH, args.load_weights_filename)
     return agent, train_env, val_envs
 
 
@@ -294,6 +295,7 @@ def make_arg_parser():
     parser.add_argument("--with_objects", action='store_true')
     parser.add_argument("--train_instructions_with_objects", action='store_true')
     parser.add_argument("--experiment_name", default=DEFAULT_EXPERIMENT_NAME)
+    parser.add_argument("--load_weights_filename", default="")
     return parser
 
 

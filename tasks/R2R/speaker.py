@@ -34,7 +34,7 @@ def backchain_inference_states(last_inference_state):
 class Seq2SeqSpeaker(object):
     feedback_options = ['teacher', 'argmax', 'sample']
 
-    def __init__(self, env, results_path, encoder, decoder, instruction_len, max_episode_len=10):
+    def __init__(self, env, results_path, encoder, decoder, instruction_len, load_weights_filename="", max_episode_len=10):
         self.env = env
         self.results_path = results_path
         random.seed(1)
@@ -43,6 +43,12 @@ class Seq2SeqSpeaker(object):
 
         self.encoder = encoder
         self.decoder = decoder
+
+        if load_weights:
+            path = 'speaker/snapshots/' + load_weights_filename
+            print("Loading weights from ", path)
+            self.load('speaker/snapshots/' + load_weights_filename)
+
         self.instruction_len = instruction_len
 
         self.losses = []
