@@ -23,6 +23,7 @@ from vocab import SUBTRAIN_VOCAB, TRAIN_VOCAB, TRAINVAL_VOCAB
 RESULT_DIR = 'tasks/R2R/speaker/results/'
 SNAPSHOT_DIR = 'tasks/R2R/speaker/snapshots/'
 PLOT_DIR = 'tasks/R2R/speaker/plots/'
+DEFAULT_EXPERIMENT_NAME = 'speaker_base'
 
 # TODO: how much is this truncating instructions?
 MAX_INSTRUCTION_LENGTH = 80
@@ -52,10 +53,9 @@ def get_model_prefix(args, image_feature_list):
     if args.use_train_subset:
         model_prefix = 'trainsub_' + model_prefix
 
-    now = datetime.datetime.now()
-    year, month, day, hour, minute = now.year, now.month, now.day, now.hour, now.minute
-    datetime_prefix = f"{year}_{month}_{day}_{hour}_{minute}_"
-    return datetime_prefix + model_prefix
+    datetime_prefix = f"{time.time()}".split(".")[0]
+    experiment_prefix = args.experiment_name
+    return experiment_prefix + datetime_prefix + model_prefix
 
 
 def eval_model(agent, results_path, use_dropout, feedback, allow_cheat=False):
@@ -293,6 +293,7 @@ def make_arg_parser():
     parser.add_argument("--plot_dir", default=PLOT_DIR)
     parser.add_argument("--with_objects", action='store_true')
     parser.add_argument("--train_instructions_with_objects", action='store_true')
+    parser.add_argument("--experiment_name", default=DEFAULT_EXPERIMENT_NAME)
     return parser
 
 
