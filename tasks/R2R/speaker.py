@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import random
 from collections import namedtuple
+import os
 
 import torch
 import torch.nn as nn
@@ -45,6 +46,7 @@ class Seq2SeqSpeaker(object):
         self.decoder = decoder
 
         if load_weights_filename:
+            print(os.listdir())
             path = 'speaker/snapshots/' + load_weights_filename
             print("Loading weights from ", path)
             self.load('speaker/snapshots/' + load_weights_filename)
