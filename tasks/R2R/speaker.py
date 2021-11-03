@@ -46,10 +46,9 @@ class Seq2SeqSpeaker(object):
         self.decoder = decoder
 
         if load_weights_filename:
-            print(os.listdir())
-            path = 'speaker/snapshots/' + load_weights_filename
+            path = 'tasks/R2R(speaker/snapshots/' + load_weights_filename
             print("Loading weights from ", path)
-            self.load('speaker/snapshots/' + load_weights_filename)
+            self.load(path)
 
         self.instruction_len = instruction_len
 
