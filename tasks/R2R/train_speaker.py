@@ -53,9 +53,8 @@ def get_model_prefix(args, image_feature_list):
     if args.use_train_subset:
         model_prefix = 'trainsub_' + model_prefix
 
-    datetime_prefix = f"{time.time()}".split(".")[0]
     experiment_prefix = args.experiment_name
-    return experiment_prefix + datetime_prefix + model_prefix
+    return experiment_prefix + model_prefix
 
 
 def eval_model(agent, results_path, use_dropout, feedback, allow_cheat=False):
