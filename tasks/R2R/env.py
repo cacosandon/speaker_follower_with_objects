@@ -669,7 +669,7 @@ class EnvBatch():
 class R2RBatch():
     ''' Implements the Room to Room navigation task, using discretized viewpoints and pretrained features '''
 
-    def __init__(self, image_features_list, batch_size=100, seed=10, splits=['train'], tokenizer=None, beam_size=1, instruction_limit=None, with_objects=False, train_instructions_with_objects=False):
+    def __init__(self, image_features_list, batch_size=100, seed=10, splits=['train'], tokenizer=None, beam_size=1, instruction_limit=None, with_objects=False, train_instructions_with_objects=False, custom_metadata_path=""):
         self.image_features_list = image_features_list
         self.data = []
         self.scans = []
@@ -701,6 +701,7 @@ class R2RBatch():
         self.ix = 0
         self.batch_size = batch_size
         self._load_nav_graphs()
+        self.custom_metadata_path = custom_metadata_path
         self.with_objects = with_objects
         self.train_instructions_with_objects = train_instructions_with_objects
         if with_objects and self.splits in [['train'], ['train_instructions_with_objects']]:
@@ -739,6 +740,9 @@ class R2RBatch():
         path = 'train_objects_by_word.pickle'
         if self.train_instructions_with_objects:
             path = 'train_objects_by_word_objects_only.pickle'
+        if self.custom_metadata_path:
+            print(f"Loading custom objecs metadata path {self.custom_metadata_path}")
+            path = self.custom_metadata_path
         with open(f'data/{path}', 'rb') as file:
             data = pickle.load(file)
 
