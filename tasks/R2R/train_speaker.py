@@ -198,7 +198,9 @@ def make_env_and_models(args, train_vocab_path, train_splits, test_splits,
     train_env = R2RBatch(image_features_list, batch_size=batch_size,
                          splits=train_splits, tokenizer=tok,
                          with_objects=args.with_objects,
-                         train_instructions_with_objects=args.train_instructions_with_objects)
+                         train_instructions_with_objects=args.train_instructions_with_objects,
+                         custom_metadata_path=args.custom_metadata_path
+    )
 
     enc_hidden_size = hidden_size//2 if bidirectional else hidden_size
     glove = np.load(glove_path)
@@ -292,6 +294,7 @@ def make_arg_parser():
     parser.add_argument("--snapshot_dir", default=SNAPSHOT_DIR)
     parser.add_argument("--plot_dir", default=PLOT_DIR)
     parser.add_argument("--with_objects", action='store_true')
+    parser.add_argument("--custom_metadata_path", default="")
     parser.add_argument("--train_instructions_with_objects", action='store_true')
     parser.add_argument("--experiment_name", default=DEFAULT_EXPERIMENT_NAME)
     parser.add_argument("--load_weights_filename", default="")

@@ -65,7 +65,11 @@ def get_word_objects(instruction_metadata):
   elements = filter_elements_by_count(elements)
 
   by_segment_objects = defaultdict(list)
-  sequence_length = elements[0]['sequence_len']
+
+  if elements:
+    sequence_length = elements[0]['sequence_len']
+  else:
+    sequence_length = instr_len
   for element in elements:
     # For the moment, we only process objects
     if 'area' not in element:
@@ -78,12 +82,12 @@ def get_word_objects(instruction_metadata):
     })
 
   def segment_of_word(idx, instruction_length, sequence_length):
-    return round(idx / instruction_length * sequence_length)
+    return round(idx / instr_len * sequence_length)
 
   by_word_objects = []
-  instruction_length = len(instruction)
+  instr_len = len(instruction)
   for idx, word in enumerate(instruction):
-    segment = segment_of_word(idx, instruction_length, sequence_length)
+    segment = segment_of_word(idx, instr_len, sequence_length)
     objects = filter_objects(by_segment_objects[segment])
 
     by_word_objects.append(objects)
@@ -92,7 +96,7 @@ def get_word_objects(instruction_metadata):
 
 
 processed_data = {}
-for key, value in list(data.items())[:10]:
+for key, value in data.items():
 
   instruction_objects_by_word = []
   for instruction_metadata in value['instructions_metadata']:
@@ -105,9 +109,6 @@ for key, value in list(data.items())[:10]:
   processed_data[key] = instruction_objects_by_word
 
 
-import pdb; pdb.set_trace()
-
-
-#with open('data/working_data/train_metadata.pickle', 'wb') as file:
-#  pickle.dump(processed_data, file)
+with open('data/working_data/train_objects_by_word.pickle', 'wb') as file:
+  pickle.dump(processed_data, file)
 
