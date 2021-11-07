@@ -251,7 +251,7 @@ class Seq2SeqSpeaker(object):
                         object_encode = self.env.tokenizer.encode_sentence(object_name)[0][0]
 
                         if object_encode == 1:
-                            import pdb; pdb.set_trace()
+                            raise NameError(f'Encoding is 1 at {object_name}')
 
                         target_objects.append(object_encode)
                     else:

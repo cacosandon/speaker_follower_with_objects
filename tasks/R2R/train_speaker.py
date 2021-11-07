@@ -54,7 +54,7 @@ def get_model_prefix(args, image_feature_list):
         model_prefix = 'trainsub_' + model_prefix
 
     experiment_prefix = args.experiment_name
-    return experiment_prefix + model_prefix
+    return experiment_prefix + '_' + model_prefix
 
 
 def eval_model(agent, results_path, use_dropout, feedback, allow_cheat=False):
