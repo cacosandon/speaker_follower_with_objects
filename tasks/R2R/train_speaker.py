@@ -200,8 +200,8 @@ def make_env_and_models(args, train_vocab_path, train_splits, test_splits,
                          with_objects=args.with_objects,
                          train_instructions_with_objects=args.train_instructions_with_objects,
                          custom_metadata_path=args.custom_metadata_path,
-                         objects_per_word=args.objects_per_word,
-                         objects_loss_lambda=args.objects_loss_lambda
+                         objects_per_word=int(args.objects_per_word),
+                         objects_loss_lambda=float(args.objects_loss_lambda)
     )
 
     enc_hidden_size = hidden_size//2 if bidirectional else hidden_size
