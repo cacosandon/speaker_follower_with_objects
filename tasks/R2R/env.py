@@ -708,6 +708,7 @@ class R2RBatch():
         self.custom_metadata_path = custom_metadata_path
         self.with_objects = with_objects
         self.objects_per_word = objects_per_word
+        self.objects_loss_lambda = objects_loss_lambda
         self.train_instructions_with_objects = train_instructions_with_objects
         if with_objects and self.splits in [['train'], ['train_instructions_with_objects']]:
             self._load_objects_by_word()
