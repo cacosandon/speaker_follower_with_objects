@@ -73,7 +73,8 @@ def train(args, train_env, agent, log_every=log_every, val_envs=None):
     tensorboard_dir = 'tensorboard'
     print("Setting up TensorboardX", flush=True)
     log_dir = tensorboard_dir + '/' + get_model_prefix(args, train_env.image_features_list)
-    os.mkdir(log_dir)
+    if not os.path.exists(log_dir):
+        os.mkdir(log_dir)
     if os.path.exists(log_dir):
         print("Existing log dir, ready for use TensorboardX :)", flush=True)
         tb_logger = SummaryWriter(log_dir=log_dir)
