@@ -199,7 +199,9 @@ def make_env_and_models(args, train_vocab_path, train_splits, test_splits,
                          splits=train_splits, tokenizer=tok,
                          with_objects=args.with_objects,
                          train_instructions_with_objects=args.train_instructions_with_objects,
-                         custom_metadata_path=args.custom_metadata_path
+                         custom_metadata_path=args.custom_metadata_path,
+                         objects_per_word=args.objects_per_word,
+                         objects_loss_lambda=args.objects_loss_lambda
     )
 
     enc_hidden_size = hidden_size//2 if bidirectional else hidden_size
@@ -298,6 +300,8 @@ def make_arg_parser():
     parser.add_argument("--train_instructions_with_objects", action='store_true')
     parser.add_argument("--experiment_name", default=DEFAULT_EXPERIMENT_NAME)
     parser.add_argument("--load_weights_filename", default="")
+    parser.add_argument("--objects_per_word", default=2)
+    parser.add_argument("--objects_loss_lambda", default=0.3)
     return parser
 
 

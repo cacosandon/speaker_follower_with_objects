@@ -4,17 +4,18 @@
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
-from eval import Evaluation
 mpl.use('Agg')
 import matplotlib.pyplot as plt
+import sys
+import itertools
 
 logs = {
-  'seq2seq_sample_imagenet_log.csv': 'Student-forcing',
-  'seq2seq_teacher_imagenet_log.csv': 'Teacher-forcing'
+  'speaker_base_plots.csv': 'Speaker-base',
+  'speaker-w-objs-pro.csv': 'Speaker-with-objects'
 }
 
-RESULT_DIR = 'tasks/R2R/results/'
-PLOT_DIR = 'tasks/R2R/plots/'
+RESULT_DIR = 'results/'
+PLOT_DIR = '/Users/cacosandon/Desktop/MSc/heavy_data/plots/'
 
 def plot_training_curves():
     ''' Plot the validation loss, navigation error and success rate during training. '''
@@ -26,23 +27,25 @@ def plot_training_curves():
 
     dfs = {}
     for log in logs:
-        dfs[log] = pd.read_csv('tasks/R2R/plots/'+log)
+        dfs[log] = pd.read_csv(PLOT_DIR + log)
 
     plots = [
         ('Loss', 'loss',['val_seen loss', 'val_unseen loss', 'train loss']),
-        ('Navigation Error', 'm', ['val_seen nav_error', 'val_unseen nav_error']),
-        ('Success', '%', ['val_seen success_rate', 'val_unseen success_rate'])
+        ('Bleu score', 'score', ['val_seen bleu', 'val_unseen bleu']),
+        ('Model score', 'score', ['val_seen model_score', 'val_unseen model_score'])
     ]
 
-    colors = {
-      'Student-forcing Val Seen': 'C0',
-      'Student-forcing Val Unseen': 'C2',
-      'Student-forcing Train': 'C4',
-      'Teacher-forcing Val Seen': 'C1',
-      'Teacher-forcing Val Unseen': 'C3',
-      'Teacher-forcing Train': 'C5'
-    }
-    
+    available_colors = [f'C{number}' for number in range(6)]
+    colors = {}
+    index = 0
+    for model in logs.values():
+        colors[model + ' Val Seen'] = available_colors[index]
+        colors[model + ' Val Unseen'] = available_colors[index + 1]
+        colors[model + ' Train'] = available_colors[index + 2]
+        index += 3
+        if index + 2 >= len(available_colors):
+            index = 0
+
     fig, axes = plt.subplots(ncols=3, squeeze=True, figsize=(13,3.25))
     handles = []
     labels = []
@@ -70,13 +73,13 @@ def plot_training_curves():
     plt.tight_layout()
     fig.subplots_adjust(bottom=0.4)
     handles, labels = axes[0].get_legend_handles_labels()
-    axes[1].legend(handles = handles, labels=labels, loc='upper center', 
+    axes[1].legend(handles = handles, labels=labels, loc='upper center',
              bbox_to_anchor=(0.5, -0.35), fancybox=False, shadow=False, ncol=3)
     plt.setp(axes[1].get_legend().get_texts(), fontsize='12')
     plt.savefig('%s/training.png' % (PLOT_DIR))
 
-        
-def plot_final_scores():
+
+""" def plot_final_scores():
     ''' Plot the scores '''
     font = {
       'size'   : 12
@@ -114,12 +117,12 @@ def plot_final_scores():
     legend = ax.legend(loc='upper right')
     plt.tight_layout()
     plt.savefig('%s/val_seen_error.png' % (PLOT_DIR))
-    plt.close(fig)
+    plt.close(fig) """
 
 
 if __name__ == '__main__':
     plot_training_curves()
-    plot_final_scores()
+    # plot_final_scores()
 
 
 

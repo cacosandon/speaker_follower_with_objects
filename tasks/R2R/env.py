@@ -669,7 +669,11 @@ class EnvBatch():
 class R2RBatch():
     ''' Implements the Room to Room navigation task, using discretized viewpoints and pretrained features '''
 
-    def __init__(self, image_features_list, batch_size=100, seed=10, splits=['train'], tokenizer=None, beam_size=1, instruction_limit=None, with_objects=False, train_instructions_with_objects=False, custom_metadata_path=""):
+    def __init__(self,
+        image_features_list, batch_size=100, seed=10, splits=['train'],
+        tokenizer=None, beam_size=1, instruction_limit=None, with_objects=False,
+        train_instructions_with_objects=False, custom_metadata_path="",
+        objects_per_word=3, objects_loss_lambda=0.3):
         self.image_features_list = image_features_list
         self.data = []
         self.scans = []
@@ -703,6 +707,7 @@ class R2RBatch():
         self._load_nav_graphs()
         self.custom_metadata_path = custom_metadata_path
         self.with_objects = with_objects
+        self.objects_per_word = objects_per_word
         self.train_instructions_with_objects = train_instructions_with_objects
         if with_objects and self.splits in [['train'], ['train_instructions_with_objects']]:
             self._load_objects_by_word()

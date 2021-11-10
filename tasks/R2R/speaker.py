@@ -128,7 +128,7 @@ class Seq2SeqSpeaker(object):
                list(perm_indices)
 
     def _score_obs_actions_and_instructions(self, path_obs, path_actions, encoded_instructions, feedback):
-        LAMBDA = 0.3
+        LAMBDA = self.env.objects_loss_lambda
 
         assert len(path_obs) == len(path_actions)
         assert len(path_obs) == len(encoded_instructions)
@@ -226,7 +226,7 @@ class Seq2SeqSpeaker(object):
         # returns a quantity of objects that should be in every word.
         # output is (words_qty, num_instructions, max_length)
 
-        words_quantity = 2
+        words_quantity = self.env.objects_per_word
 
         num_instructions = len(paths_obs)
         seq_tensor = np.full((words_quantity, num_instructions, max_length), vocab_pad_idx)
