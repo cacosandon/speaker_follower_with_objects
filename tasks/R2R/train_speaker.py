@@ -196,14 +196,19 @@ def make_env_and_models(args, train_vocab_path, train_splits, test_splits,
     image_features_list = ImageFeatures.from_args(args)
     vocab = read_vocab(train_vocab_path)
     tok = Tokenizer(vocab=vocab)
-    train_env = R2RBatch(image_features_list, batch_size=batch_size,
-                         splits=train_splits, tokenizer=tok,
-                         with_objects=args.with_objects,
-                         train_instructions_with_objects=args.train_instructions_with_objects,
-                         custom_metadata_path=args.custom_metadata_path,
-                         objects_per_word=int(args.objects_per_word),
-                         objects_loss_lambda=float(args.objects_loss_lambda)
-    )
+
+    if args.speaker_model_prefix:
+        # Data augmentation
+        train_env = None
+    else:
+        train_env = R2RBatch(image_features_list, batch_size=batch_size,
+                            splits=train_splits, tokenizer=tok,
+                            with_objects=args.with_objects,
+                            train_instructions_with_objects=args.train_instructions_with_objects,
+                            custom_metadata_path=args.custom_metadata_path,
+                            objects_per_word=int(args.objects_per_word),
+                            objects_loss_lambda=float(args.objects_loss_lambda)
+        )
 
     enc_hidden_size = hidden_size//2 if bidirectional else hidden_size
     glove = np.load(glove_path)
@@ -219,8 +224,7 @@ def make_env_and_models(args, train_vocab_path, train_splits, test_splits,
     test_envs = {
         split: (R2RBatch(image_features_list, batch_size=batch_size,
                          splits=[split], tokenizer=tok,
-                         instruction_limit=test_instruction_limit,
-                         with_objects=args.with_objects),
+                         instruction_limit=test_instruction_limit),
                 eval_speaker.SpeakerEvaluation(
                     [split], instructions_per_path=test_instruction_limit))
         for split in test_splits}
