@@ -8,7 +8,7 @@ import rational_speaker
 
 def selfplay_speaker_setup(args):
     train_splits = ['train']
-    pred_splits = args.pred_splits
+    pred_splits = [args.pred_splits]
     vocab = train_speaker.TRAIN_VOCAB
 
     train_env, pred_envs, encoder, decoder = train_speaker.make_env_and_models(
@@ -90,8 +90,7 @@ def make_arg_parser():
     parser.add_argument("speaker_model_prefix")
     parser.add_argument("pred_results_output_file")
     parser.add_argument("--batch_size", type=int, default=20)
-    parser.add_argument("--pred_splits", nargs="+",
-                        default=["data_augmentation_paths"])
+    parser.add_argument("--pred_splits", default="data_augmentation_paths")
 
     # for rational self-play generation
     parser.add_argument("--follower_model_prefix",
