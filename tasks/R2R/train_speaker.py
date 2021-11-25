@@ -310,6 +310,7 @@ def make_arg_parser():
     parser.add_argument("--objects_per_word", default=2)
     parser.add_argument("--objects_loss_lambda", default=0.3)
     parser.add_argument("--use_craft", action='store_true')
+    parser.add_argument("--speaker_model_prefix", default="")
     return parser
 
 
