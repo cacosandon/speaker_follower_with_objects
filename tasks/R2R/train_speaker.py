@@ -233,6 +233,8 @@ def make_env_and_models(args, train_vocab_path, train_splits, test_splits,
 
 
 def train_setup(args):
+    if args.use_craft:
+        train_splits = ['train_with_craft']
     if args.train_instructions_with_objects:
         print("Using train instructions with only objects present", flush=True)
         train_splits = ['train_with_objects']
@@ -307,6 +309,7 @@ def make_arg_parser():
     parser.add_argument("--load_weights_filename", default="")
     parser.add_argument("--objects_per_word", default=2)
     parser.add_argument("--objects_loss_lambda", default=0.3)
+    parser.add_argument("--use_craft", action='store_true')
     return parser
 
 
