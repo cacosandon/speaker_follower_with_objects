@@ -715,6 +715,7 @@ class R2RBatch():
         self.set_beam_size(beam_size)
         self.print_progress = False
         print('R2RBatch loaded with %d instructions, using splits: %s' % (len(self.data), ",".join(splits)), flush=True)
+        print(f'Example of instructions: {self.data[0]}', flush=True)
         if self.with_objects:
             print('Using objects to generate better instructions', flush=True)
         else:
