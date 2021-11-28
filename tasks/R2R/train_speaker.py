@@ -233,11 +233,11 @@ def make_env_and_models(args, train_vocab_path, train_splits, test_splits,
 
 
 def train_setup(args):
-    if args.use_craft:
-        train_splits = ['train_with_craft']
     if args.train_instructions_with_objects:
         print("Using train instructions with only objects present", flush=True)
         train_splits = ['train_with_objects']
+    elif args.use_craft:
+        train_splits = ['train_with_craft']
     else:
         print("Using all train instructions", flush=True)
         train_splits = ['train']
