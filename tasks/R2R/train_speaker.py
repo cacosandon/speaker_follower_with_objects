@@ -237,7 +237,7 @@ def train_setup(args):
         print("Using train instructions with only objects present", flush=True)
         train_splits = ['train_with_objects']
     elif args.use_craft:
-        train_splits = ['train_with_craft']
+        train_splits = [args.use_craft]
     else:
         print("Using all train instructions", flush=True)
         train_splits = ['train']
@@ -309,7 +309,7 @@ def make_arg_parser():
     parser.add_argument("--load_weights_filename", default="")
     parser.add_argument("--objects_per_word", default=2)
     parser.add_argument("--objects_loss_lambda", default=0.3)
-    parser.add_argument("--use_craft", action='store_true')
+    parser.add_argument("--use_craft", default='')
     parser.add_argument("--speaker_model_prefix", default="")
     return parser
 
