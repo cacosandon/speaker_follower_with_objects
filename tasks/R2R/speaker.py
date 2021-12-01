@@ -288,7 +288,7 @@ class Seq2SeqSpeaker(object):
 
             craft_instruction = self.env.craft_instructions[f"{path}"]
 
-            craft_instruction_encoding, length = self.tokenizer.encode_sentence(craft_instruction)
+            craft_instruction_encoding, length = self.env.tokenizer.encode_sentence(craft_instruction)
 
             craft_instruction_encoding = np.concatenate((craft_instruction_encoding, [vocab_eos_idx]))
             craft_instruction_encoding = craft_instruction_encoding[:max_length]
