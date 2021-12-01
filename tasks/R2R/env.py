@@ -673,12 +673,14 @@ class R2RBatch():
         image_features_list, batch_size=100, seed=10, splits=['train'],
         tokenizer=None, beam_size=1, instruction_limit=None, with_objects=False,
         train_instructions_with_objects=False, custom_metadata_path="",
-        objects_per_word=3, objects_loss_lambda=0.3):
+        objects_per_word=3, objects_loss_lambda=0.3, with_craft_instruction="",
+        craft_instruction_loss_beta=0.3):
         self.image_features_list = image_features_list
         self.data = []
         self.scans = []
         self.gt = {}
         self.objects_by_words = {}
+        self.craft_instructions = {}
         for item in load_datasets(splits):
             # Split multiple instructions into separate entries
             assert item['path_id'] not in self.gt
@@ -707,11 +709,15 @@ class R2RBatch():
         self._load_nav_graphs()
         self.custom_metadata_path = custom_metadata_path
         self.with_objects = with_objects
+        self.with_craft_instruction = with_craft_instruction
         self.objects_per_word = objects_per_word
         self.objects_loss_lambda = objects_loss_lambda
+        self.craft_instruction_loss_beta = craft_instruction_loss_beta
         self.train_instructions_with_objects = train_instructions_with_objects
         if with_objects and self.splits in [['train'], ['train_instructions_with_objects']]:
             self._load_objects_by_word()
+        if with_craft_instruction and self.splits in [['train'], ['train_instructions_with_objects']]:
+            self._load_craft_instructions()
         self.set_beam_size(beam_size)
         self.print_progress = False
         print('R2RBatch loaded with %d instructions, using splits: %s' % (len(self.data), ",".join(splits)), flush=True)
@@ -755,6 +761,15 @@ class R2RBatch():
 
         print(f'Loading objects of 3 instruction per {len(data.keys())} paths', flush=True)
         self.objects_by_words = data
+
+    def _load_craft_instructions(self):
+        ''' Load craft instructions for adding loss '''
+        path = self.with_craft_instruction
+        with open(f'data/{path}', 'r') as file:
+            data = json.load(file)
+
+        print(f'Loading {len(data.keys())} craft instructions', flush=True)
+        self.craft_instructions = data
 
 
     def _next_minibatch(self, sort_instr_length):

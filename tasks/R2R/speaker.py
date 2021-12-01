@@ -129,6 +129,7 @@ class Seq2SeqSpeaker(object):
 
     def _score_obs_actions_and_instructions(self, path_obs, path_actions, encoded_instructions, feedback):
         LAMBDA = self.env.objects_loss_lambda
+        BETA = self.env.craft_instruction_loss_beta
 
         assert len(path_obs) == len(path_actions)
         assert len(path_obs) == len(encoded_instructions)
@@ -141,6 +142,8 @@ class Seq2SeqSpeaker(object):
         if self.env.with_objects and self.env.splits in [['train'], ['train_instructions_with_objects']]:
             objects_seq = self.batch_objects_by_word(path_obs, instr_seq, self.instruction_len)
             number_of_objects_by_word = objects_seq.size(dim=0)
+        if self.env.with_craft_instruction and self.env.splits in [['train'], ['train_instructions_with_objects']]:
+            craft_seq = self.batch_craft_instructions(path_obs, instr_seq, self.instruction_len)
 
         batch_size = len(start_obs)
 
@@ -197,6 +200,10 @@ class Seq2SeqSpeaker(object):
                 for object_idx in range(number_of_objects_by_word):
                     object_target = objects_seq[object_idx, :, t].contiguous()
                     loss += LAMBDA * F.nll_loss(log_probs, object_target, ignore_index=vocab_pad_idx, reduce=True, size_average=True)
+
+            if self.env.with_craft_instruction and self.env.splits in [['train'], ['train_instructions_with_objects']]:
+                craft_target = craft_seq[:, t].contiguous()
+                loss += BETA * f.nll_loss(log_probs, craft_target, ignore_index=vocab_pad_idx, reduce=True, size_average=True)
 
             for perm_index, src_index in enumerate(perm_indices):
                 word_idx = w_t[perm_index].data.item()
@@ -260,6 +267,32 @@ class Seq2SeqSpeaker(object):
                 target_objects = np.concatenate((target_objects, [vocab_eos_idx]))
                 target_objects = target_objects[:max_length]
                 seq_tensor[object_word_index, i, :len(target_objects)] = target_objects
+
+        seq_tensor = torch.from_numpy(seq_tensor)
+
+        return try_cuda(Variable(seq_tensor, requires_grad=False).long())
+
+    def batch_craft_instructions(self, paths_obs, instr_seq, max_length):
+        # returns a craft instruction generated for each path.
+        # output is (words_qty, num_instructions, max_length)
+
+        words_quantity = self.env.craft_instructions
+
+        num_instructions = len(paths_obs)
+        seq_tensor = np.full((num_instructions, max_length), vocab_pad_idx)
+        seq_lengths = []
+
+        for i, path_obs in enumerate(paths_obs):
+            path, instr_index = path_obs[0]['instr_id'].split('_')
+            path, instr_index = int(path), int(instr_index)
+
+            craft_instruction = self.env.craft_instructions[f"{path}"]
+
+            craft_instruction_encoding, length = tokenizer.encode_sentence(craft_instruction)
+
+            craft_instruction_encoding = np.concatenate((craft_instruction_encoding, [vocab_eos_idx]))
+            craft_instruction_encoding = craft_instruction_encoding[:max_length]
+            seq_tensor[i, :len(craft_instruction_encoding)] = craft_instruction_encoding
 
         seq_tensor = torch.from_numpy(seq_tensor)
 

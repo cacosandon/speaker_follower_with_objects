@@ -207,7 +207,9 @@ def make_env_and_models(args, train_vocab_path, train_splits, test_splits,
                             train_instructions_with_objects=args.train_instructions_with_objects,
                             custom_metadata_path=args.custom_metadata_path,
                             objects_per_word=int(args.objects_per_word),
-                            objects_loss_lambda=float(args.objects_loss_lambda)
+                            objects_loss_lambda=float(args.objects_loss_lambda),
+                            with_craft_instruction=args.with_craft_instruction,
+                            craft_instruction_loss_beta=args.craft_instruction_loss_beta
         )
 
     enc_hidden_size = hidden_size//2 if bidirectional else hidden_size
@@ -311,6 +313,9 @@ def make_arg_parser():
     parser.add_argument("--objects_loss_lambda", default=0.3)
     parser.add_argument("--use_craft", default='')
     parser.add_argument("--speaker_model_prefix", default="")
+    parser.add_argument("--with_craft_instruction", default="")
+    parser.add_argument("--craft_instruction_loss_beta", default=0.3)
+
     return parser
 
 
