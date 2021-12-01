@@ -203,7 +203,7 @@ class Seq2SeqSpeaker(object):
 
             if self.env.with_craft_instruction and self.env.splits in [['train'], ['train_instructions_with_objects']]:
                 craft_target = craft_seq[:, t].contiguous()
-                loss += BETA * f.nll_loss(log_probs, craft_target, ignore_index=vocab_pad_idx, reduce=True, size_average=True)
+                loss += BETA * F.nll_loss(log_probs, craft_target, ignore_index=vocab_pad_idx, reduce=True, size_average=True)
 
             for perm_index, src_index in enumerate(perm_indices):
                 word_idx = w_t[perm_index].data.item()
