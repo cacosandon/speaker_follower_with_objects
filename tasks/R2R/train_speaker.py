@@ -209,7 +209,7 @@ def make_env_and_models(args, train_vocab_path, train_splits, test_splits,
                             objects_per_word=int(args.objects_per_word),
                             objects_loss_lambda=float(args.objects_loss_lambda),
                             with_craft_instruction=args.with_craft_instruction,
-                            craft_instruction_loss_beta=args.craft_instruction_loss_beta
+                            craft_instruction_loss_beta=float(args.craft_instruction_loss_beta)
         )
 
     enc_hidden_size = hidden_size//2 if bidirectional else hidden_size
